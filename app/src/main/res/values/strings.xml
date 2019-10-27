@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">GitClient</string>
+    <string name="button_repo_text">Репозитории</string>
+    <string name="button_authorization_text">Авторизация</string>
+    <string name="label_welcome">Добро пожаловать</string>
+    <string name="client_id">6037953454f8e7e43779</string>
+    <string name="client_secret">160e749812a44cba248a80d8a7606538745cd0f3</string>
+    <string name="redirect_Url">webgitrepo://callback</string>
+    <string name="reposUrl">https://api.github.com/users/%1$s/repos?access_token=%2$s</string>
+    <string name="empty">im empty</string>
+    <string name="git_repository">Git repository</string>
+    <string name="title_activity_detail_repo">detailRepoActivity</string>
+    <string name="info_title">Информация о репозитории</string>
+    <string name="full_name_title">Полное название</string>
+    <string name="description_title">Описание репозитория</string>
+    <string name="commit_info_title"> Информация о последнем коммите</string>
+    <string name="hash_title">Hash</string>
+    <string name="commit_message_title">Commit message</string>
+    <string name="author_title">Автор</string>
+    <string name="data_title">Дата</string>
+    <string name="forks_title">Forks</string>
+    <string name="stars_title">Stars</string>
+    <string name="watches_title">Watches</string>
+    <string name="auth_url">https://github.com/login/oauth/authorize?client_id=%1$s%2$sredirect_url=%3$s%4$scope=repo</string>
+    <string name="settings_file_name">gitHubClientSettings</string>
+    <string name="settings_file_token">access_token</string>
+</resources>
