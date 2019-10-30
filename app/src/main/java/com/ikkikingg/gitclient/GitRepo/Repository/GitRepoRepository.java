@@ -1,9 +1,6 @@
 package com.ikkikingg.gitclient.GitRepo.Repository;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -64,76 +61,5 @@ public class GitRepoRepository {
 
         return liveData;
     }
-
-    /*public LiveData<Resource<GitHubResponse>> getAllRepos(final boolean networkRequest) {
-        //В отдельном потоке делаем запрос на обновление данных
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                refresh(networkRequest);
-            }
-        });
-
-        final LiveData<List<GitRepo>> source = gitRepoDao.getAllRepos();
-
-        final MediatorLiveData mediator = new MediatorLiveData();
-        mediator.addSource(source, new Observer<List<GitRepo>>() {
-            @Override
-            public void onChanged(@Nullable List<GitRepo> gitRepoList) {
-                Log.d("DATA", "Observed");
-                GitHubResponse response = new GitHubResponse(gitRepoList);
-                Resource<GitHubResponse> success = Resource.success(response);
-                mediator.setValue(success);
-            }
-        });
-        return mediator;
-    }
-
-    @WorkerThread
-    private void refresh(final boolean networkRequest) {
-        try {
-
-            if (!networkRequest) {
-                //Смотрим а есть ли у нас в БД данные, если есть подгружаем их и выходим
-                List<GitRepo> listGitRepo = gitRepoDao.hasRepos();
-                if (listGitRepo != null && !listGitRepo.isEmpty()) {
-                    Log.d("DATA", "Room has a data");
-                    return;
-                } else {
-                    Log.d("DATA", "Room is empty, Fetching data from server");
-                }
-            }
-
-            //Если нет делаем запрос на сервер
-
-            //Создаём запрос, получаем ответ, сохраняем в базу
-            Response<List<GitRepo>> response = gitHubRepoApi.getAllRepos().execute();
-
-            if (!response.isSuccessful()) {
-
-                List<GitRepo> repoList = response.body();
-
-                if (repoList != null) {
-                    GitRepo[] repoArray = new GitRepo[repoList.size()];
-                    repoList.toArray(repoArray);
-
-                    long[] ids = gitRepoDao.insertAll(repoArray);
-
-                    if (ids == null || ids.length != repoArray.length) {
-                        Log.e("API", "Unable to insert");
-                    } else {
-                        Log.d("DATA", "Data inserted");
-                    }
-                } else {
-                    Log.d("API", "Getting null response from a server");
-                }
-            }
-        } catch (IOException e) {
-            Log.e("API", "" + e.getMessage());
-        }
-    }*/
-
-
-
 
 }

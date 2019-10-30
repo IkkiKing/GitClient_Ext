@@ -103,8 +103,6 @@ public class GitRepoActivity extends AppCompatActivity {
                                 }
                             });
                         }
-
-
                         Log.e("Error", gitHubResponseResource.getException().getMessage(), gitHubResponseResource.getException());
                         Toast.makeText(GitRepoActivity.this, "Error loading data", Toast.LENGTH_LONG).show();
 
