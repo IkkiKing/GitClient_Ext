@@ -1,67 +1,115 @@
 package com.ikkikingg.gitclient.GitRepo.Model;
 
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "repo_table")
+import com.google.gson.annotations.SerializedName;
+import com.ikkikingg.gitclient.GitRepo.Network.License;
+import com.ikkikingg.gitclient.GitRepo.Network.Owner;
+
+@Entity
 public class GitRepo {
 
     @PrimaryKey
     private int id;
+    @SerializedName("name")
+    private String repoName;
 
-    private String name;
+    @SerializedName("full_name")
+    private String fullName;
 
-    private String license;
+    @Embedded
+    private Owner owner;
+    private String description;
 
-    private String login;
+    @SerializedName("watchers_count")
+    private int watchersCount;
 
-    private String image;
+    @SerializedName("forks_count")
+    private int forksCount;
 
-    public GitRepo(int id, String name, String license, String login, String image) {
-        this.id = id;
-        this.name = name;
-        this.license = license;
-        this.login = login;
-        this.image = image;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @Embedded
+    private License license;
+
+    @SerializedName("stargazers_count")
+    private int stargazersCoune;
 
     public int getId() {
         return id;
     }
 
     public String getName() {
-        return name;
+        return repoName;
     }
 
-    public String getLicense() {
+    public String getFullName() {
+        return fullName;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getWatchersCount() {
+        return watchersCount;
+    }
+
+    public int getForksCount() {
+        return forksCount;
+    }
+
+    public License getLicense() {
         return license;
     }
 
-    public String getLogin() {
-        return login;
+    public int getStargazersCoune() {
+        return stargazersCoune;
     }
 
-    public String getImage() {
-        return image;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public void setLicense(String license) {
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setWatchersCount(int watchersCount) {
+        this.watchersCount = watchersCount;
+    }
+
+    public void setForksCount(int forksCount) {
+        this.forksCount = forksCount;
+    }
+
+    public void setLicense(License license) {
         this.license = license;
     }
 
-    public void setOwner(String owner) {
-        this.login = owner;
+    public void setStargazersCoune(int stargazersCoune) {
+        this.stargazersCoune = stargazersCoune;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public String getRepoName() {
+        return repoName;
+    }
+
+    public void setRepoName(String repoName) {
+        this.repoName = repoName;
     }
 }

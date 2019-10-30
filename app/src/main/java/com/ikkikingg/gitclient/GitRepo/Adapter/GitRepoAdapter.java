@@ -16,7 +16,6 @@ import com.ikkikingg.gitclient.GitRepo.Model.GitRepo;
 import com.ikkikingg.gitclient.GitRepo.Model.GitRepoMatch;
 import com.ikkikingg.gitclient.R;
 import com.squareup.picasso.Picasso;
-import java.io.File;
 
 public class GitRepoAdapter extends ListAdapter<GitRepo, GitRepoAdapter.GitRepoHolder> {
     private Context context;
@@ -52,10 +51,16 @@ public class GitRepoAdapter extends ListAdapter<GitRepo, GitRepoAdapter.GitRepoH
         GitRepo gitRepo = getItem(position);
 
         holder.textViewRepoName.setText(gitRepo.getName());
-        holder.textViewLicense.setText(gitRepo.getLicense());
-        holder.textViewLogin.setText(gitRepo.getLogin());
+
+        if (gitRepo.getLicense() != null) {
+            holder.textViewLicense.setText(gitRepo.getLicense().getLicenseName());
+        }
+        if (gitRepo.getOwner() != null) {
+            holder.textViewLogin.setText(gitRepo.getOwner().getLogin());
+        }
+
         Picasso.get()
-                .load(new File(context.getFilesDir().getPath() + "/" + gitRepo.getLogin()))
+                .load(gitRepo.getOwner().getAvatarUrl())
                 .placeholder(R.drawable.anim_loading_progress)
                 .error(R.drawable.img_error_loading)
                 .into(holder.imageViewAvatar);

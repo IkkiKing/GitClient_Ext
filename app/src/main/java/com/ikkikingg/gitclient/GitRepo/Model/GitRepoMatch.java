@@ -11,10 +11,10 @@ public class GitRepoMatch {
     }
 
     public Boolean isMatch() {
-        return gitRepoOld.getLogin().equals(gitRepoNew.getLogin()) &&
+        return gitRepoOld.getOwner().getLogin().equals(gitRepoNew.getOwner().getLogin()) &&
                 gitRepoOld.getName().equals(gitRepoNew.getName()) &&
-                gitRepoOld.getImage().equals(gitRepoNew.getImage()) &&
-                gitRepoOld.getLicense().equals(gitRepoNew.getLicense()) &&
+                gitRepoOld.getOwner().getAvatarUrl().equals(gitRepoNew.getOwner().getAvatarUrl()) &&
+               // gitRepoOld.getLicense().equals(gitRepoNew.getLicense()) &&
                 gitRepoOld.getId() == gitRepoNew.getId();
     }
 

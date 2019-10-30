@@ -1,4 +1,4 @@
-package com.ikkikingg.gitclient.GitRepo.Repository.Network;
+package com.ikkikingg.gitclient.GitRepo.Network;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -14,5 +14,13 @@ public class Owner {
 
     public String getAvatarUrl() {
         return avatarUrl;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

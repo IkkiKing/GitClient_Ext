@@ -1,10 +1,10 @@
-package com.ikkikingg.gitclient.GitRepo.Repository.Network;
+package com.ikkikingg.gitclient.GitRepo.Network;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import static com.ikkikingg.gitclient.GitRepo.Repository.Network.Resource.Status.ERROR;
-import static com.ikkikingg.gitclient.GitRepo.Repository.Network.Resource.Status.SUCCESS;
-import static com.ikkikingg.gitclient.GitRepo.Repository.Network.Resource.Status.LOADING;
+import static com.ikkikingg.gitclient.GitRepo.Network.Resource.Status.ERROR;
+import static com.ikkikingg.gitclient.GitRepo.Network.Resource.Status.SUCCESS;
+import static com.ikkikingg.gitclient.GitRepo.Network.Resource.Status.LOADING;
 
 
 import com.ikkikingg.gitclient.GitRepo.Exception.AppException;

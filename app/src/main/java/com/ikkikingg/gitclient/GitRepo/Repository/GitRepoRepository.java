@@ -1,189 +1,139 @@
 package com.ikkikingg.gitclient.GitRepo.Repository;
 
-import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import com.ikkikingg.gitclient.GitRepo.Model.GitRepoMatch;
-import com.ikkikingg.gitclient.GitRepo.Repository.Database.GitRepoDao;
-import com.ikkikingg.gitclient.GitRepo.Repository.Database.GitRepoDatabase;
+import com.ikkikingg.gitclient.GitRepo.Database.GitRepoDao;
 import com.ikkikingg.gitclient.GitRepo.Model.GitRepo;
-import com.ikkikingg.gitclient.GitRepo.Repository.Network.GitRepoNetwork;
-import com.ikkikingg.gitclient.GitRepo.Repository.Network.OnNetworkReadyCallback;
+import com.ikkikingg.gitclient.GitRepo.Network.ApiResponse;
+import com.ikkikingg.gitclient.GitRepo.Network.GitHubRepoApi;
+import com.ikkikingg.gitclient.GitRepo.Network.Resource;
+import com.ikkikingg.gitclient.NetworkBoundResource.NetworkBoundResource;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+
+import javax.inject.Inject;
+
 
 public class GitRepoRepository {
-    private GitRepoDao gitRepoDao;
-    private GitRepoNetwork gitRepoNetwork;
-    private LiveData<List<GitRepo>> allRepos;
+    final private GitHubRepoApi gitHubRepoApi;
+    final private GitRepoDao gitRepoDao;
+    final private Context context;
 
-    public GitRepoRepository(Application applicaiton) {
-
-        GitRepoDatabase database = GitRepoDatabase.getInstance(applicaiton);
-        gitRepoDao = database.gitRepoDao();
-
-        if (isConnected(applicaiton)) {
-            gitRepoNetwork = GitRepoNetwork.getInstance(applicaiton);
-            allRepos = gitRepoNetwork.getAllRepos(new OnNetworkReadyCallback() {
-                @Override
-                public void onNetworkDataReady(List<GitRepo> gitRepos) {
-                    if (gitRepos != null){
-                        saveRepos(gitRepos);
-                    }
-                }
-            });
-        } else {
-            allRepos = gitRepoDao.getAllRepos();
-        }
-    }
-
-    private boolean isConnected(Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork.isConnectedOrConnecting();
+    @Inject
+    public GitRepoRepository(GitHubRepoApi gitHubRepoApi,
+                             GitRepoDao gitRepoDao,
+                             Context context) {
+        this.gitHubRepoApi = gitHubRepoApi;
+        this.gitRepoDao = gitRepoDao;
+        this.context = context;
     }
 
 
-    //продумать проверку на существование записи в кэше перед сейвом
-    public void saveRepos(List<GitRepo> gitRepos) {
-        for (GitRepo gitRepo : gitRepos) {
+    public LiveData<Resource<List<GitRepo>>> getAllRepos(final boolean networkRequest) {
 
-            //Пытаемся найти в базе репозиторий с таким же ID
-            GitRepo gitRepoDb = getGitRepoById(gitRepo.getId());
+        LiveData<Resource<List<GitRepo>>> liveData = new NetworkBoundResource<List<GitRepo>, List<GitRepo>>() {
+            @Override
+            protected void saveCallResult(@NonNull List<GitRepo> items) {
+                GitRepo[] arr = new GitRepo[items.size()];
+                items.toArray(arr);
+                gitRepoDao.insertAll(arr);
+            }
 
-            if (gitRepoDb != null){
-                ///Если нашли, проверяем что его содержиемое совпадает, если так сохранять его не нужно
-                if (isRepoTheSame(gitRepoDb, gitRepo)){
-                    continue;
-                }else{
-                //Если не совпадает удаляем и вставляем заново
-                    delete(gitRepo);
+            @Override
+            protected boolean shouldFetch(@Nullable List<GitRepo> data) {
+                return (data == null || data.isEmpty() || networkRequest);//let's always refresh to be up to date. data == null || data.isEmpty();
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<GitRepo>> loadFromDb() {
+                return gitRepoDao.getAllRepos();
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<List<GitRepo>>> createCall() {
+                LiveData<ApiResponse<List<GitRepo>>> response = gitHubRepoApi.getAllReposLiveData();
+                return response;
+            }
+        }.getAsLiveData();
+
+        return liveData;
+    }
+
+    /*public LiveData<Resource<GitHubResponse>> getAllRepos(final boolean networkRequest) {
+        //В отдельном потоке делаем запрос на обновление данных
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                refresh(networkRequest);
+            }
+        });
+
+        final LiveData<List<GitRepo>> source = gitRepoDao.getAllRepos();
+
+        final MediatorLiveData mediator = new MediatorLiveData();
+        mediator.addSource(source, new Observer<List<GitRepo>>() {
+            @Override
+            public void onChanged(@Nullable List<GitRepo> gitRepoList) {
+                Log.d("DATA", "Observed");
+                GitHubResponse response = new GitHubResponse(gitRepoList);
+                Resource<GitHubResponse> success = Resource.success(response);
+                mediator.setValue(success);
+            }
+        });
+        return mediator;
+    }
+
+    @WorkerThread
+    private void refresh(final boolean networkRequest) {
+        try {
+
+            if (!networkRequest) {
+                //Смотрим а есть ли у нас в БД данные, если есть подгружаем их и выходим
+                List<GitRepo> listGitRepo = gitRepoDao.hasRepos();
+                if (listGitRepo != null && !listGitRepo.isEmpty()) {
+                    Log.d("DATA", "Room has a data");
+                    return;
+                } else {
+                    Log.d("DATA", "Room is empty, Fetching data from server");
                 }
             }
-            insert(gitRepo);
 
+            //Если нет делаем запрос на сервер
+
+            //Создаём запрос, получаем ответ, сохраняем в базу
+            Response<List<GitRepo>> response = gitHubRepoApi.getAllRepos().execute();
+
+            if (!response.isSuccessful()) {
+
+                List<GitRepo> repoList = response.body();
+
+                if (repoList != null) {
+                    GitRepo[] repoArray = new GitRepo[repoList.size()];
+                    repoList.toArray(repoArray);
+
+                    long[] ids = gitRepoDao.insertAll(repoArray);
+
+                    if (ids == null || ids.length != repoArray.length) {
+                        Log.e("API", "Unable to insert");
+                    } else {
+                        Log.d("DATA", "Data inserted");
+                    }
+                } else {
+                    Log.d("API", "Getting null response from a server");
+                }
+            }
+        } catch (IOException e) {
+            Log.e("API", "" + e.getMessage());
         }
-    }
-
-    private Boolean isRepoTheSame(GitRepo gitRepoDb, GitRepo gitRepo){
-        return new GitRepoMatch(gitRepoDb, gitRepo).isMatch();
-    }
-
-    public void insert(GitRepo gitRepo) {
-        new InsertGitRepoAsyncTask(gitRepoDao).execute(gitRepo);
-    }
+    }*/
 
 
-    public void update(GitRepo gitRepo) {
-        new UpdatetGitRepoAsyncTask(gitRepoDao).execute(gitRepo);
-    }
-
-    public void delete(GitRepo gitRepo) {
-        new DeleteGitRepoAsyncTask(gitRepoDao).execute(gitRepo);
-    }
-
-    public void deleteAll() {
-        new DeleteAllGitRepoAsyncTask(gitRepoDao).execute();
-    }
-
-    public LiveData<List<GitRepo>> getAllRepos() {
-        return allRepos;
-    }
-
-    private GitRepo getGitRepoById(int id) {
-        GitRepo gitRepo = null;
-        AsyncTask asyncTask =  new SelectGitRepoAsyncTask(gitRepoDao).execute(new Integer(id));
-        try {
-            gitRepo = (GitRepo) asyncTask.get();
-        } catch (InterruptedException e) {
-            Log.e("GET_BY_ID" , "InterruptedException trying to select by id = " + id);
-        } catch (ExecutionException e) {
-            Log.e("GET_BY_ID" , "ExecutionException trying to select by id =" + id);
-        }
-        return gitRepo;
-    }
-
-    private static class SelectGitRepoAsyncTask extends AsyncTask<Integer, Void, GitRepo> {
-        private GitRepoDao gitRepoDao;
-
-        private SelectGitRepoAsyncTask(GitRepoDao gitRepoDao) {
-            this.gitRepoDao = gitRepoDao;
-        }
-
-        @Override
-        protected GitRepo doInBackground(Integer... integers) {
-            int value = integers[0].intValue();
-            return gitRepoDao.getGitRepoById(value);
-        }
-
-        @Override
-        protected void onPostExecute(GitRepo gitRepo) {
-            super.onPostExecute(gitRepo);
-        }
-    }
-
-    private static class InsertGitRepoAsyncTask extends AsyncTask<GitRepo, Void, Void> {
-        private GitRepoDao gitRepoDao;
-
-        private InsertGitRepoAsyncTask(GitRepoDao gitRepoDao) {
-            this.gitRepoDao = gitRepoDao;
-        }
-
-        @Override
-        protected Void doInBackground(GitRepo... gitRepos) {
-            gitRepoDao.insert(gitRepos[0]);
-            return null;
-        }
-    }
-
-
-    private static class UpdatetGitRepoAsyncTask extends AsyncTask<GitRepo, Void, Void> {
-        private GitRepoDao gitRepoDao;
-
-        private UpdatetGitRepoAsyncTask(GitRepoDao gitRepoDao) {
-            this.gitRepoDao = gitRepoDao;
-        }
-
-        @Override
-        protected Void doInBackground(GitRepo... gitRepos) {
-            gitRepoDao.update(gitRepos[0]);
-            return null;
-        }
-    }
-
-    private static class DeleteGitRepoAsyncTask extends AsyncTask<GitRepo, Void, Void> {
-        private GitRepoDao gitRepoDao;
-
-        private DeleteGitRepoAsyncTask(GitRepoDao gitRepoDao) {
-            this.gitRepoDao = gitRepoDao;
-        }
-
-        @Override
-        protected Void doInBackground(GitRepo... gitRepos) {
-            gitRepoDao.delete(gitRepos[0]);
-            return null;
-        }
-    }
-
-    private static class DeleteAllGitRepoAsyncTask extends AsyncTask<Void, Void, Void> {
-        private GitRepoDao gitRepoDao;
-
-        private DeleteAllGitRepoAsyncTask(GitRepoDao gitRepoDao) {
-            this.gitRepoDao = gitRepoDao;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            gitRepoDao.deleteAllRepos();
-            return null;
-        }
-    }
 
 
 }
