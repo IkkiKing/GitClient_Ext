@@ -5,19 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
-
 import com.google.android.material.snackbar.Snackbar;
-import com.ikkikingg.gitclient.BrowseConnection;
+import com.ikkikingg.gitclient.GitRepo.Adapter.CustomRecyclerView;
 import com.ikkikingg.gitclient.GitRepo.DI.DaggerGitAppComponent;
 import com.ikkikingg.gitclient.GitRepo.Network.GitHubResponse;
 import com.ikkikingg.gitclient.GitRepo.Network.Resource;
@@ -36,6 +35,8 @@ import com.ikkikingg.gitclient.R;
 public class GitRepoActivity extends AppCompatActivity {
 
     private GitRepoViewModel gitRepoViewModel;
+    private SwipeRefreshLayout swipeRefresher;
+    private Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +57,16 @@ public class GitRepoActivity extends AppCompatActivity {
         gitRepoViewModel = GitRepoViewModel.create(this);
         appComponent.inject(gitRepoViewModel);
 
+        final CustomRecyclerView recyclerView = findViewById(R.id.recyclerViewRepos);
 
-        final RecyclerView recyclerView = findViewById(R.id.recyclerViewRepos);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        recyclerView.setEmptyView(findViewById(R.id.emptyImageView));
 
         final GitRepoAdapter adapter = new GitRepoAdapter(this);
         recyclerView.setAdapter(adapter);
 
-        final SwipeRefreshLayout swipeRefresher = findViewById(R.id.swipeRefreshId);
+        swipeRefresher = findViewById(R.id.swipeRefreshId);
         swipeRefresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -77,40 +79,25 @@ public class GitRepoActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable Resource<GitHubResponse> gitHubResponseResource) {
                 swipeRefresher.setRefreshing(false);
+
                 switch (gitHubResponseResource.getStatus()) {
                     case LOADING: //loading
                         swipeRefresher.setRefreshing(true);
                         break;
                     case ERROR:
                         swipeRefresher.setRefreshing(false);
-
-                        if (new BrowseConnection().isConnected()) {
-                            final Snackbar snackbar = Snackbar.make(recyclerView, "Error loading data", Snackbar.LENGTH_LONG);
-                            snackbar.setAction("Try again", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    gitRepoViewModel.load(true);
-                                    snackbar.dismiss();
-                                }
-                            });
-                        } else {
-                            final Snackbar snackbar = Snackbar.make(recyclerView, "Internet connection is lost", Snackbar.LENGTH_LONG);
-                            snackbar.setAction("Try again", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    gitRepoViewModel.load(true);
-                                    snackbar.dismiss();
-                                }
-                            });
+                        //Если получили ошибку но соединение есть показываем снек бар
+                        if (isOnline(getApplicationContext())) {
+                            getSnackbar(swipeRefresher, "Error loading data:" , "Try again", Snackbar.LENGTH_INDEFINITE);
                         }
-                        Log.e("Error", gitHubResponseResource.getException().getMessage(), gitHubResponseResource.getException());
-                        Toast.makeText(GitRepoActivity.this, "Error loading data", Toast.LENGTH_LONG).show();
 
+                        Log.e("Error", gitHubResponseResource.getException().getMessage(), gitHubResponseResource.getException());
                         break;
                     case SUCCESS:
                         swipeRefresher.setRefreshing(false);
                         GitHubResponse data = gitHubResponseResource.getData();
                         adapter.submitList(data.getGitRepoList());
+
                         break;
                 }
             }
@@ -124,9 +111,49 @@ public class GitRepoActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
+    private BroadcastReceiver internetConnectionReciever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (!isOnline(context) && swipeRefresher != null) {
+                getSnackbar(swipeRefresher, "Internet connection is lost", "Try again", Snackbar.LENGTH_INDEFINITE);
+            }
+        }
+    };
 
+    private boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+
+    private void getSnackbar(View view, String text, String textAction, int length) {
+        snackbar = Snackbar.make(view, text, length);
+        if (textAction != null && !textAction.isEmpty()) {
+            snackbar.setAction(textAction, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    gitRepoViewModel.load(true);
+                    snackbar.dismiss();
+                }
+            });
+        }
+        snackbar.show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.wifi.STATE_CHANGE");
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(internetConnectionReciever, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(internetConnectionReciever);
+    }
 }

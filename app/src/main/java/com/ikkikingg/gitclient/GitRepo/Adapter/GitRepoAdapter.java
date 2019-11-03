@@ -97,6 +97,8 @@ public class GitRepoAdapter extends ListAdapter<GitRepo, GitRepoAdapter.GitRepoH
         void onItemClick(GitRepo gitRepo);
     }
 
+
+
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }

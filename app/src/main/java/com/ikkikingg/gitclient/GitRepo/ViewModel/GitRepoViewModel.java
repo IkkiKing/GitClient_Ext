@@ -26,8 +26,11 @@ public class GitRepoViewModel extends ViewModel {
     final private LiveData<Resource<GitHubResponse>> allRepos = Transformations.switchMap(request, new Function<Request, LiveData<Resource<GitHubResponse>>>() {
         @Override
         public LiveData<Resource<GitHubResponse>> apply(final Request input) {
+
             LiveData<Resource<List<GitRepo>>> resourceLiveData = repository.getAllRepos(input.networkRequest);
+
             final MediatorLiveData<Resource<GitHubResponse>> mediator = new MediatorLiveData<>();
+
             mediator.addSource(resourceLiveData, new Observer<Resource<List<GitRepo>>>() {
                 @Override
                 public void onChanged(@Nullable Resource<List<GitRepo>> gitRepos) {

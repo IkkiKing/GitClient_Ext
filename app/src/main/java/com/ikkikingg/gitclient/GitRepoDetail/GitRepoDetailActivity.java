@@ -11,5 +11,7 @@ public class GitRepoDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_git_repo_detail);
+
+
     }
 }
