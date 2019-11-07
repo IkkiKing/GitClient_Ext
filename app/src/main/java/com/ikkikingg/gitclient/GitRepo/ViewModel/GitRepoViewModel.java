@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 import com.ikkikingg.gitclient.GitRepo.Model.GitRepo;
 import com.ikkikingg.gitclient.GitRepo.Repository.GitRepoRepository;
-import com.ikkikingg.gitclient.GitRepo.Network.GitHubResponse;
+import com.ikkikingg.gitclient.GitRepo.Network.GitRepoResponse;
 import com.ikkikingg.gitclient.GitRepo.Network.Resource;
 import java.util.List;
 import javax.inject.Inject;
@@ -23,19 +23,19 @@ public class GitRepoViewModel extends ViewModel {
 
     final private MutableLiveData<Request> request = new MutableLiveData();
 
-    final private LiveData<Resource<GitHubResponse>> allRepos = Transformations.switchMap(request, new Function<Request, LiveData<Resource<GitHubResponse>>>() {
+    final private LiveData<Resource<GitRepoResponse>> allRepos = Transformations.switchMap(request, new Function<Request, LiveData<Resource<GitRepoResponse>>>() {
         @Override
-        public LiveData<Resource<GitHubResponse>> apply(final Request input) {
+        public LiveData<Resource<GitRepoResponse>> apply(final Request input) {
 
             LiveData<Resource<List<GitRepo>>> resourceLiveData = repository.getAllRepos(input.networkRequest);
 
-            final MediatorLiveData<Resource<GitHubResponse>> mediator = new MediatorLiveData<>();
+            final MediatorLiveData<Resource<GitRepoResponse>> mediator = new MediatorLiveData<>();
 
             mediator.addSource(resourceLiveData, new Observer<Resource<List<GitRepo>>>() {
                 @Override
                 public void onChanged(@Nullable Resource<List<GitRepo>> gitRepos) {
-                    GitHubResponse resp = new GitHubResponse(gitRepos.getData(), input.networkRequest);
-                    Resource<GitHubResponse> response = null;
+                    GitRepoResponse resp = new GitRepoResponse(gitRepos.getData(), input.networkRequest);
+                    Resource<GitRepoResponse> response = null;
                     switch (gitRepos.getStatus()){
                         case LOADING:
                             response =  Resource.loading(resp);
@@ -66,13 +66,14 @@ public class GitRepoViewModel extends ViewModel {
         this.repository = repository;
     }
 
-    public LiveData<Resource<GitHubResponse>> getAllRepos(){
+    public LiveData<Resource<GitRepoResponse>> getAllRepos(){
         return allRepos;
     }
 
     public void load(boolean networkRequest) {
         request.setValue(new Request(networkRequest));
     }
+
 
     public static class Request {
 

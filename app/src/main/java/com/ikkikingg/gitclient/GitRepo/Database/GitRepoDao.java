@@ -33,8 +33,6 @@ public interface GitRepoDao {
     @Query("DELETE FROM GitRepo")
     void deleteAllRepos();
 
-    @Query("SELECT * FROM GitRepo")
-    List<GitRepo> hasRepos();
 
     @Query("SELECT * FROM GitRepo WHERE  id = :id LIMIT 1")
     GitRepo getGitRepoById(int id);

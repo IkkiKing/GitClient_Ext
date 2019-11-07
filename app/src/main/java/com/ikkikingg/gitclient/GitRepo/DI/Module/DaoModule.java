@@ -1,14 +1,10 @@
 package com.ikkikingg.gitclient.GitRepo.DI.Module;
 
 import android.app.Application;
-
 import androidx.room.Room;
-
 import com.ikkikingg.gitclient.GitRepo.Database.GitRepoDao;
 import com.ikkikingg.gitclient.GitRepo.Database.GitRepoDatabase;
-
 import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 

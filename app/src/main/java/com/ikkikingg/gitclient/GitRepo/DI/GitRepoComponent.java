@@ -19,8 +19,7 @@ import dagger.Component;
         modules = {AppModule.class, NetworkModule.class, RepositoryModule.class, GitHubRepoApiModule.class, DaoModule.class}
 )
 
-public interface GitAppComponent {
+public interface GitRepoComponent {
     public void inject(GitRepoViewModel viewModelModule);
-
     public void inject(Context context);
 }

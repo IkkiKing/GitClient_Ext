@@ -4,12 +4,12 @@ import com.ikkikingg.gitclient.GitRepo.Model.GitRepo;
 
 import java.util.List;
 
-public class GitHubResponse {
+public class GitRepoResponse {
 
     final private List<GitRepo> gitRepoList;
     private boolean networkRequest;
 
-    public GitHubResponse(List<GitRepo> gitRepoList, boolean networkRequest) {
+    public GitRepoResponse(List<GitRepo> gitRepoList, boolean networkRequest) {
         this.gitRepoList = gitRepoList;
         this.networkRequest = networkRequest;
     }

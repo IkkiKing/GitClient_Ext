@@ -4,11 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="90dp"
     android:layout_margin="3dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
     android:background="?android:attr/selectableItemBackground">
 
     <RelativeLayout
@@ -17,74 +14,70 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/relativeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:id="@+id/linerLayoutUserInfo"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp">
 
-            <LinearLayout
-                android:id="@+id/linerLayoutRepoInfo"
-                android:layout_width="300dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="0dp"
-                android:gravity="bottom"
-                android:orientation="vertical">
+            <ImageView
+                android:id="@+id/imageViewAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center"
+                tools:srcCompat="@tools:sample/avatars" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/imageViewRepo"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="top"
-                        android:layout_margin="3dp"
-                        android:contentDescription="@string/git_repository"
-                        app:srcCompat="@drawable/img_repo_96" />
-
-                    <TextView
-                        android:id="@+id/textViewRepoName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="3dp"
-                        android:gravity="top"/>
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/textViewLicense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="3dp"
-                    android:text="" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linerLayoutUserInfo"
-                android:layout_width="90dp"
-                android:layout_height="match_parent"
+            <TextView
+                android:id="@+id/textViewLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageViewAvatar"
+                android:layout_margin="1dp"
                 android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imageViewAvatar"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    tools:srcCompat="@tools:sample/avatars" />
-
-                <TextView
-                    android:id="@+id/textViewLogin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="1dp"
-                    android:gravity="center"
-                    android:text="TextView"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
+                android:text="TextView"
+                android:textSize="14dp"
+                android:textAlignment="center"/>
         </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/linerLayoutRepoInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/linerLayoutUserInfo"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageViewRepo"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/git_repository"
+                app:srcCompat="@drawable/img_repo_96"
+                android:layout_margin="5dp"/>
+
+            <TextView
+                android:id="@+id/textViewRepoName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/imageViewRepo"
+                android:layout_margin="5dp"/>
+
+
+            <TextView
+                android:id="@+id/textViewLicense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_alignParentBottom="true"
+                android:textDirection="rtl"/>
+
+        </RelativeLayout>
+
+
     </RelativeLayout>
+    >
+
 
 </androidx.cardview.widget.CardView>

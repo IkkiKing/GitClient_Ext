@@ -17,19 +17,25 @@ import android.util.Log;
 import android.view.View;
 import com.google.android.material.snackbar.Snackbar;
 import com.ikkikingg.gitclient.GitRepo.Adapter.CustomRecyclerView;
-import com.ikkikingg.gitclient.GitRepo.DI.DaggerGitAppComponent;
-import com.ikkikingg.gitclient.GitRepo.Network.GitHubResponse;
+
+
+import com.ikkikingg.gitclient.GitRepo.DI.DaggerGitRepoComponent;
+import com.ikkikingg.gitclient.GitRepo.DI.GitRepoComponent;
+import com.ikkikingg.gitclient.GitRepo.Network.GitRepoResponse;
 import com.ikkikingg.gitclient.GitRepo.Network.Resource;
 import com.ikkikingg.gitclient.GitRepo.ViewModel.GitRepoViewModel;
 import com.ikkikingg.gitclient.GitRepo.Model.GitRepo;
 import com.ikkikingg.gitclient.GitRepo.Adapter.GitRepoAdapter;
 
-import com.ikkikingg.gitclient.GitRepo.DI.GitAppComponent;
+
+
 import com.ikkikingg.gitclient.GitRepo.DI.Module.AppModule;
 import com.ikkikingg.gitclient.GitRepo.DI.Module.DaoModule;
 import com.ikkikingg.gitclient.GitRepo.DI.Module.GitHubRepoApiModule;
 import com.ikkikingg.gitclient.GitRepo.DI.Module.NetworkModule;
 import com.ikkikingg.gitclient.GitRepo.DI.Module.RepositoryModule;
+
+import com.ikkikingg.gitclient.GitRepoDetail.GitRepoDetailActivity;
 import com.ikkikingg.gitclient.R;
 
 public class GitRepoActivity extends AppCompatActivity {
@@ -44,7 +50,7 @@ public class GitRepoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_git_repo);
 
         //Прописываем зависимости
-        GitAppComponent appComponent = DaggerGitAppComponent.builder()
+        GitRepoComponent appComponent = DaggerGitRepoComponent.builder()
                 .appModule(new AppModule(getApplication()))
                 .gitHubRepoApiModule(new GitHubRepoApiModule())
                 .networkModule(new NetworkModule("https://api.github.com"))
@@ -75,9 +81,9 @@ public class GitRepoActivity extends AppCompatActivity {
         });
 
         gitRepoViewModel = ViewModelProviders.of(this).get(GitRepoViewModel.class);
-        gitRepoViewModel.getAllRepos().observe(this, new Observer<Resource<GitHubResponse>>() {
+        gitRepoViewModel.getAllRepos().observe(this, new Observer<Resource<GitRepoResponse>>() {
             @Override
-            public void onChanged(@Nullable Resource<GitHubResponse> gitHubResponseResource) {
+            public void onChanged(@Nullable Resource<GitRepoResponse> gitHubResponseResource) {
                 swipeRefresher.setRefreshing(false);
 
                 switch (gitHubResponseResource.getStatus()) {
@@ -95,7 +101,7 @@ public class GitRepoActivity extends AppCompatActivity {
                         break;
                     case SUCCESS:
                         swipeRefresher.setRefreshing(false);
-                        GitHubResponse data = gitHubResponseResource.getData();
+                        GitRepoResponse data = gitHubResponseResource.getData();
                         adapter.submitList(data.getGitRepoList());
 
                         break;
@@ -108,7 +114,10 @@ public class GitRepoActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new GitRepoAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(GitRepo gitRepo) {
-
+                Intent intent = new Intent(getApplicationContext(), GitRepoDetailActivity.class);
+                intent.putExtra("repoName", gitRepo.getName());
+                intent.putExtra("repoLogin", gitRepo.getOwner().getLogin());
+                startActivity(intent);
             }
         });
     }

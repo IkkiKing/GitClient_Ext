@@ -1,7 +1,9 @@
-package com.ikkikingg.gitclient.GitRepo.DI.Module;
+package com.ikkikingg.gitclient.GitRepoDetail.DI.Module;
 
 import android.content.Context;
+
 import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
