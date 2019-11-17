@@ -5,10 +5,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import com.ikkikingg.gitclient.GitRepo.Model.GitRepo;
 import com.ikkikingg.gitclient.GitRepoDetail.Model.GitRepoDetail;
-
-import java.util.List;
+import io.reactivex.Flowable;
 
 @Dao
 public interface GitRepoDetailDao {
@@ -26,4 +24,7 @@ public interface GitRepoDetailDao {
 
     @Query("SELECT * FROM GitRepoDetail WHERE login = :login AND name = :name ")
     LiveData<GitRepoDetail> getGitRepoDetail(String login, String name);
+
+    @Query("SELECT * FROM GitRepoDetail WHERE login = :login AND name = :name ")
+    Flowable<GitRepoDetail> getGitRepoDetailRx(String login, String name);
 }

@@ -38,14 +38,14 @@ public class GitRepoDetail {
     @SerializedName("stargazers_count")
     private int stargazersCount;
 
- /*   @Expose
+
     private String sha;
-    @Expose
+
     private String message;
-    @Expose
+
     private String author;
-    @Expose
-    private String data;*/
+
+    private String data;
 
     public int getId() {
         return id;
@@ -119,7 +119,7 @@ public class GitRepoDetail {
         this.stargazersCount = stargazersCount;
     }
 
-    /*public String getSha() {
+    public String getSha() {
         return sha;
     }
 
@@ -149,5 +149,5 @@ public class GitRepoDetail {
 
     public void setData(String data) {
         this.data = data;
-    }*/
+    }
 }

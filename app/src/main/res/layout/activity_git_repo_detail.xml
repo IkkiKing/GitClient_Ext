@@ -7,332 +7,340 @@
     android:orientation="vertical"
     tools:context=".GitRepoDetail.GitRepoDetailActivity">
 
-
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshId"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-
-            <TextView
-                android:id="@+id/textViewHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:gravity="center"
-                android:text="Информация о репозитории"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"></TextView>
-
-            <RelativeLayout
-                android:id="@+id/relativeLayoutName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textViewHeader"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:id="@+id/textViewFullNameTitle"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Полное название"
-                    android:textSize="14dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/textViewFullName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_toRightOf="@+id/textViewFullNameTitle"
-                    android:text="Описание"
-                    android:textSize="14dp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/relativeLayoutDescr"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_below="@+id/relativeLayoutName"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:id="@+id/textViewDescriptionTitle"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Описание репозитория"
-                    android:textSize="14dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/textViewDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/textViewDescriptionTitle"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:lines="4"
-                    android:text="Описание"
-                    android:textSize="12dp" />
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/textViewHeader2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/relativeLayoutDescr"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="20dp"
-                android:gravity="center"
-                android:text="Информация о последнем коммите"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
-
-
-            <RelativeLayout
-                android:id="@+id/relativeLayoutHash"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textViewHeader2"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:id="@+id/textViewHashTitle"
-                    android:layout_width="115dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Hash"
-                    android:textSize="14dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/textViewHash"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_toRightOf="@+id/textViewHashTitle"
-                    android:text="Описание"
-                    android:textSize="14dp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/relativeLayoutMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/relativeLayoutHash"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:id="@+id/textViewMessageTitle"
-                    android:layout_width="115dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_margin="10dp"
-                    android:text="Commit message"
-                    android:textSize="14dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/textViewMessage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_toRightOf="@+id/textViewMessageTitle"
-                    android:text="Описание"
-                    android:textSize="14dp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/relativeLayoutAuthor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/relativeLayoutMessage"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:id="@+id/textViewAuthorTitle"
-                    android:layout_width="115dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="Автор"
-                    android:textSize="14dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/textViewAuthor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_toRightOf="@+id/textViewAuthorTitle"
-                    android:text="Описание"
-                    android:textSize="14dp" />
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/relativeLayoutData"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/relativeLayoutAuthor"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:id="@+id/textViewDataTitle"
-                    android:layout_width="115dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Дата"
-                    android:textSize="14dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/textViewData"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_toRightOf="@+id/textViewDataTitle"
-                    android:text="Описание"
-                    android:textSize="14dp" />
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/relativeLayoutStats"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/relativeLayoutData"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="10dp"
-                android:gravity="center">
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/textViewHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:text="Информация о репозитории"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"></TextView>
 
                 <RelativeLayout
-                    android:id="@+id/layoutForks"
-                    android:layout_width="75dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp">
+                    android:id="@+id/relativeLayoutName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textViewHeader"
+                    android:layout_centerHorizontal="true">
 
                     <TextView
-                        android:id="@+id/textViewTitleForks"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:gravity="center"
-                        android:text="Forks"
-                        android:textAlignment="center"
-                        android:textSize="14dp"/>
-
-                    <ImageView
-                        android:id="@+id/imageViewForks"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/textViewTitleForks"
-                        android:layout_margin="5dp"
-                        android:src="@drawable/forks" />
+                        android:id="@+id/textViewFullNameTitle"
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Полное название"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/textViewForks"
+                        android:id="@+id/textViewFullName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/imageViewForks"
-                        android:layout_margin="5dp"
-                        android:gravity="center"
-                        android:text="100500"
-                        android:textAlignment="center" />
+                        android:layout_margin="10dp"
+                        android:layout_toRightOf="@+id/textViewFullNameTitle"
+                        android:text="Описание"
+                        android:textSize="14dp" />
+
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/layoutStars"
-                    android:layout_width="75dp"
+                    android:id="@+id/relativeLayoutDescr"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_below="@+id/relativeLayoutName"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/textViewDescriptionTitle"
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Описание репозитория"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textViewDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textViewDescriptionTitle"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:lines="4"
+                        android:text="Описание"
+                        android:textSize="12dp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textViewHeader2"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_toRightOf="@+id/layoutForks">
+                    android:layout_below="@id/relativeLayoutDescr"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:text="Информация о последнем коммите"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
+
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayoutHash"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textViewHeader2"
+                    android:layout_centerHorizontal="true">
 
                     <TextView
-                        android:id="@+id/textViewTitleStars"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:gravity="center"
-                        android:text="Stars"
-                        android:textAlignment="center"
-                        android:textSize="14dp"/>
-
-                    <ImageView
-                        android:id="@+id/imageViewStars"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/textViewTitleStars"
-                        android:layout_margin="5dp"
-                        android:src="@drawable/stars" />
+                        android:id="@+id/textViewHashTitle"
+                        android:layout_width="115dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Hash"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/textViewStars"
+                        android:id="@+id/textViewHash"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@id/imageViewStars"
-                        android:layout_margin="5dp"
-                        android:gravity="center"
-                        android:text="100500"
-                        android:textAlignment="center" />
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_toRightOf="@+id/textViewHashTitle"
+                        android:text="Описание"
+                        android:textSize="14dp" />
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/layoutWatches"
-                    android:layout_width="75dp"
+                    android:id="@+id/relativeLayoutMessage"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_toRightOf="@+id/layoutStars"
+                    android:layout_below="@+id/relativeLayoutHash"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/textViewMessageTitle"
+                        android:layout_width="115dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="10dp"
+                        android:text="Commit message"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textViewMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_toRightOf="@+id/textViewMessageTitle"
+                        android:text="Описание"
+                        android:textSize="14dp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayoutAuthor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relativeLayoutMessage"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/textViewAuthorTitle"
+                        android:layout_width="115dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:text="Автор"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textViewAuthor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_toRightOf="@+id/textViewAuthorTitle"
+                        android:text="Описание"
+                        android:textSize="14dp" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayoutData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relativeLayoutAuthor"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/textViewDataTitle"
+                        android:layout_width="115dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Дата"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textViewData"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_toRightOf="@+id/textViewDataTitle"
+                        android:text="Описание"
+                        android:textSize="14dp" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayoutStats"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/relativeLayoutData"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="10dp"
                     android:gravity="center">
 
-                    <TextView
-                        android:id="@+id/textViewTitleWatches"
-                        android:layout_width="match_parent"
+                    <RelativeLayout
+                        android:id="@+id/layoutForks"
+                        android:layout_width="75dp"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:gravity="center"
-                        android:text="Watches"
-                        android:textAlignment="center"
-                        android:textSize="14dp"/>
+                        android:layout_margin="5dp">
 
-                    <ImageView
-                        android:id="@+id/imageViewWatches"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/textViewTitleWatches"
-                        android:layout_margin="5dp"
-                        android:src="@drawable/watches" />
+                        <TextView
+                            android:id="@+id/textViewTitleForks"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:gravity="center"
+                            android:text="Forks"
+                            android:textAlignment="center"
+                            android:textSize="14dp" />
 
-                    <TextView
-                        android:id="@+id/textViewWatches"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@id/imageViewWatches"
+                        <ImageView
+                            android:id="@+id/imageViewForks"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/textViewTitleForks"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/forks" />
+
+                        <TextView
+                            android:id="@+id/textViewForks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/imageViewForks"
+                            android:layout_margin="5dp"
+                            android:gravity="center"
+                            android:text="100500"
+                            android:textAlignment="center" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layoutStars"
+                        android:layout_width="75dp"
+                        android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:gravity="center"
-                        android:text="100500"
-                        android:textAlignment="center" />
+                        android:layout_toRightOf="@+id/layoutForks">
+
+                        <TextView
+                            android:id="@+id/textViewTitleStars"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:gravity="center"
+                            android:text="Stars"
+                            android:textAlignment="center"
+                            android:textSize="14dp" />
+
+                        <ImageView
+                            android:id="@+id/imageViewStars"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/textViewTitleStars"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/stars" />
+
+                        <TextView
+                            android:id="@+id/textViewStars"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@id/imageViewStars"
+                            android:layout_margin="5dp"
+                            android:gravity="center"
+                            android:text="100500"
+                            android:textAlignment="center" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layoutWatches"
+                        android:layout_width="75dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_toRightOf="@+id/layoutStars"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/textViewTitleWatches"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:gravity="center"
+                            android:text="Watches"
+                            android:textAlignment="center"
+                            android:textSize="14dp" />
+
+                        <ImageView
+                            android:id="@+id/imageViewWatches"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/textViewTitleWatches"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/watches" />
+
+                        <TextView
+                            android:id="@+id/textViewWatches"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@id/imageViewWatches"
+                            android:layout_margin="5dp"
+                            android:gravity="center"
+                            android:text="100500"
+                            android:textAlignment="center" />
+                    </RelativeLayout>
+
                 </RelativeLayout>
 
-            </RelativeLayout>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

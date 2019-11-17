@@ -1,13 +1,11 @@
-package com.ikkikingg.gitclient.GitRepo.Network;
+package com.ikkikingg.gitclient.GitRepoDetail;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import static com.ikkikingg.gitclient.GitRepo.Network.Resource.Status.ERROR;
-import static com.ikkikingg.gitclient.GitRepo.Network.Resource.Status.SUCCESS;
-import static com.ikkikingg.gitclient.GitRepo.Network.Resource.Status.LOADING;
 
-
-import com.ikkikingg.gitclient.GitRepo.Exception.AppException;
+import static com.ikkikingg.gitclient.GitRepoDetail.Resource.Status.ERROR;
+import static com.ikkikingg.gitclient.GitRepoDetail.Resource.Status.LOADING;
+import static com.ikkikingg.gitclient.GitRepoDetail.Resource.Status.SUCCESS;
 
 public class Resource<T> {
     public enum Status {
@@ -16,12 +14,12 @@ public class Resource<T> {
 
     private final Status status;
     private final T data;
-    private final AppException exception;
+    private final String message;
 
-    private Resource(@NonNull Status status, @Nullable T data, @Nullable AppException exception) {
+    private Resource(@NonNull Status status, @Nullable T data, @Nullable String message) {
         this.status = status;
         this.data = data;
-        this.exception = exception;
+        this.message = message;
     }
 
     public Status getStatus() {
@@ -32,16 +30,16 @@ public class Resource<T> {
         return data;
     }
 
-    public AppException getException() {
-        return exception;
+    public String getMessage() {
+        return message;
     }
 
     public static <T> Resource<T> success(@NonNull T data) {
         return new Resource<>(SUCCESS, data, null);
     }
 
-    public static <T> Resource<T> error(AppException exception, @Nullable T data) {
-        return new Resource<>(ERROR, data, exception);
+    public static <T> Resource<T> error(String message, @Nullable T data) {
+        return new Resource<>(ERROR, data, message);
     }
 
     public static <T> Resource<T> loading(@Nullable T data) {
